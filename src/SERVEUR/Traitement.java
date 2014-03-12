@@ -57,6 +57,11 @@ public class Traitement implements Runnable
     {       
         System.out.println("Exécution du traitement dans un thread détaché\n");
     }
+    
+    public void insertProduct(int qte)
+    {
+        //BDD.create(qte);
+    }
 
     /**
      * Récupération dans la base de données des sites existant
@@ -113,6 +118,16 @@ public class Traitement implements Runnable
      * @return vrai si le produit inséré
      */
    public boolean insertToBdd() 
+    {
+        return sns.InsertToBase(idStock);
+    }
+   
+   /**
+    * 
+    * @param qte : nombre d'éléments à ajouter
+    * @return 
+    */
+   public boolean insertToBdd(int qte) 
     {
         return sns.InsertToBase(idStock);
     }

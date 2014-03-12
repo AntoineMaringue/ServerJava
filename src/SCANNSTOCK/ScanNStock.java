@@ -5,6 +5,7 @@ import API.IHttpRequest;
 import API.ShoppingApi;
 import fr.sciencesu.sns.hibernate.jpa.Produit;
 import fr.sciencesu.sns.hibernate.test.BDD;
+import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -61,6 +62,14 @@ public final class ScanNStock implements IScanNStock {
         return b;
     }
     
+    void setDatePeremtion(Calendar date)
+    {
+        if(produit!=null)
+        {
+            produit.setDdp(date);
+        }
+    }
+    
     public void setInfosProduct(Produit p)
     {
         produit = p;
@@ -73,12 +82,38 @@ public final class ScanNStock implements IScanNStock {
 
         //Insertion des valeurs dans la base
         b = BDD.Create("Produit", produit);
-
-        BDD.UpdateProduit("Produit", produit.getNom(), "produits_stock_stocks_id", idstock);
+        //BDD.Update(produit,idstock);
+        BDD.UpdateProduit("Produit", //TABLE
+                produit.getNom(), //CHAMP
+                "produits_stock_stocks_id", //ID 
+                idstock);//VALEUR
         //basePersoScanNStock.insertInto(_tableName, produit);
 
         //D�connection de la base
         deconnexion();
+        //_basePersoScanNStock.deconnection();
+
+        return b;
+    }
+    
+    public boolean InsertToBase(String idstock, int nb) {
+        boolean b = true;
+
+        for (int i = 0; i < nb; i++) {
+            
+        
+        //Insertion des valeurs dans la base
+        b = BDD.Create("Produit", produit);
+
+        BDD.UpdateProduit("Produit", //TABLE
+                produit.getNom(), //CHAMP
+                "produits_stock_stocks_id", //ID 
+                idstock);//VALEUR
+        //basePersoScanNStock.insertInto(_tableName, produit);
+
+        //D�connection de la base
+        deconnexion();
+        }
         //_basePersoScanNStock.deconnection();
 
         return b;

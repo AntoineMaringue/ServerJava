@@ -92,7 +92,8 @@ public class ParseurJSON implements IParseur {
                                 || value.trim().contains("description")
                                 || value.trim().contains("creationTime")
                                 || value.trim().contains("modificationTime")
-                                || value.trim().contains("images")) {
+                                || value.trim().contains("images")
+                                || value.trim().contains("quantity")) {
                             x++;
                             switch (x) {
                                 case 0:
@@ -115,6 +116,11 @@ public class ParseurJSON implements IParseur {
                                 case 5:
                                     informationsJson.put("img", value.split("=")[2]);
                                     break;
+                                case 6:
+                                {
+                                    System.out.println(value.split("=")[1]);
+                                    break;
+                                }
                                 default:
                                     break;
                             }
@@ -150,7 +156,8 @@ public class ParseurJSON implements IParseur {
             doubleString = makeMatch.group();
             System.out.println(doubleString);
         }
-        return Double.parseDouble(doubleString);
+        
+        return Double.parseDouble(doubleString.equals("0.0")?doubleString = s.split(" ")[0]:doubleString);
     }
     
     /**
@@ -174,6 +181,7 @@ public class ParseurJSON implements IParseur {
                     String doubleString = makeMatch.group();
                     System.out.println(doubleString);
                     contenance = doubleString;
+                    break;
                 }
             }
             catch(IllegalStateException ise)

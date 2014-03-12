@@ -11,6 +11,7 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  *
@@ -66,7 +67,33 @@ public class Serveur {
                         Traitement t = new Traitement();
                         message = t.getIdStock(asso);
                         sendMessage(message);
-                    }                   
+                    }
+                    else if (message.contains("new")) {
+                        String qte = message.split(",")[1].split(";")[0]; 
+                        String productInfos = message.split(";")[1].split("::")[0];                
+                        String isbn = message.split("::")[1]; 
+                        String idstock = message.split("::")[2];
+                        
+                        Traitement t = new Traitement(isbn,idstock);
+                        System.out.println("Recherche des informations du produit");
+                        t.setProduit(buildProduct(productInfos));
+                        //Création du produit
+                        //Message renvoyé au téléphone CREATION AUTO ou PASSAGE FORM SITE
+
+                        System.out.println("Création de l'entitée produit");
+                        //Insertion dans la base
+                        //Message renvoyé au téléphone Si CREATION AUTO --> INSERTION OK | KO
+                        System.out.println("Insertion dans la base");
+                        boolean insertProduct = false;
+                        
+                        //boucle sur le nombre de produits à ajouter dans la base de doonées
+                        for (int i = 0; i < Integer.valueOf(qte); i++) {
+                             insertProduct = t.insertToBdd();
+                        }                        
+                        message += (insertProduct) ? "Insertion "+ qte +" fois dans la base \n" : "";
+
+                        sendMessage(message);
+                    }
                      else if (message.contains("produits")) {
                         String isbn = message.split(",")[1];                
                         Traitement t = new Traitement(isbn);
@@ -80,25 +107,7 @@ public class Serveur {
                         }
                         sendMessage(message);
                     }
-                     else if (message.contains("newproduits")) {
-                        String productInfos = message.split(",")[1];                
-                        String isbn = message.split("::")[1].split(";")[0]; 
-                        String idstock = message.split("::")[1].split(";")[1];                        
-                        Traitement t = new Traitement(isbn,idstock);
-                        System.out.println("Recherche des informations du produit");
-                        t.setProduit(buildProduct(productInfos));
-                        //Création du produit
-                        //Message renvoyé au téléphone CREATION AUTO ou PASSAGE FORM SITE
-
-                        System.out.println("Création de l'entitée produit");
-                        //Insertion dans la base
-                        //Message renvoyé au téléphone Si CREATION AUTO --> INSERTION OK | KO
-                        System.out.println("Insertion dans la base");
-                        boolean insertProduct = t.insertToBdd();
-                        message += (insertProduct) ? "Insertion dans la base \n" : "";
-
-                        sendMessage(message);
-                    }
+                     
                     else if (message.contains("associations")) {
                         ArrayList<String> lst = new ArrayList<>();
                         Traitement t = new Traitement();
@@ -160,8 +169,28 @@ public class Serveur {
      * @return 
      */
      private Produit buildProduct(String productInfos) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+         String  nom , marque , description , prix , unite , contenance, sdate;
+         nom = productInfos.split("\n")[0];
+         marque = productInfos.split("\n")[1];
+         description = productInfos.split("\n")[2];
+         prix = productInfos.split("\n")[3];
+         unite = productInfos.split("\n")[4];
+         contenance = productInfos.split("\n")[5];
+         sdate = productInfos.split("\n")[6];
+         Calendar date = Calendar.getInstance();
+         if(!sdate.contains("null"))
+         {
+             date.set(Integer.valueOf(sdate.split("/")[0]), 
+                     Integer.valueOf(sdate.split("/")[1]),
+                     Integer.valueOf(sdate.split("/")[2]));
+         }
+         double dprix = prix.contains("null")?0.0:Double.parseDouble(prix);
+         double dcontenance = unite.contains("null")?0.0:Double.parseDouble(unite);
+         Produit p = new Produit(nom, dprix, contenance,dcontenance,"");
+         p.setDdp(date);
+         p.setImg("");
+         return p;
+     }
 
     void sendMessage(String msg) {
         try {

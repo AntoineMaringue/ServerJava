@@ -1,5 +1,7 @@
 package SCANNSTOCK;
 
+import API.Api;
+import API.IHttpRequest;
 import API.IParseur;
 import API.ParseurJSON;
 import java.io.BufferedReader;
@@ -16,8 +18,13 @@ public class Main
 	{
 		//ScanNStock sns = new ScanNStock();
 		//sns.launch();
-		
-		IParseur p = new ParseurJSON();
+	String COCA_LIGHT = "5449000050205";
+        String SUCHARD = "7622210107718";
+        String SPECIAL_K = "5050083425585";
+            IHttpRequest api = new Api();
+            api.runSearchProduct(COCA_LIGHT);
+            
+		/*IParseur p = new ParseurJSON();
 		String s = "";
 		try{
 			InputStream ips=new FileInputStream("C:\\Users\\antoi_000\\Desktop\\t.txt"); 
@@ -52,6 +59,6 @@ public class Main
             else
             {
                 System.out.println("Le produit demandé n'a pas été trouvé dans la base google !");
-            }
+            }*/
 	}
 }
