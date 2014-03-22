@@ -17,9 +17,9 @@ import java.util.Set;
 
 public class ShoppingApi {
 
-    private final static String googleUri = "https://www.googleapis.com/shopping/search/v1/public/products?key=";
-    private final static String keyGoogle = "AIzaSyAc7_OzUpgYJ2tg0_XLRY2FtTpbGpL1yIU";
-    private final static String countryName = "FR";
+    //private final static String googleUri = "https://www.googleapis.com/shopping/search/v1/public/products?key=";
+    //private final static String keyGoogle = "AIzaSyAc7_OzUpgYJ2tg0_XLRY2FtTpbGpL1yIU";
+    //private final static String countryName = "FR";
     private static String informations;
     private static Produit _produit;
 
@@ -27,7 +27,7 @@ public class ShoppingApi {
         informations = "";
     }
 
-    public static boolean runSearchProduct(String ean) {
+    /*public static boolean runSearchProduct(String ean) {
         IParseur parseur = null;
         Set<Entry<String, String>> informationsProduit = null;
         ean = ean.split("/")[0];
@@ -43,7 +43,7 @@ public class ShoppingApi {
         }
 
 
-    }
+    }*/
 
     private static void createProduit(Set<Entry<String, String>> informationsProduit) {
         //Affichage des donnees parsee
@@ -96,7 +96,7 @@ public class ShoppingApi {
         return informations;
     }
 
-    private static String requestHttpForGoogle(String EAN, String format) {
+    /*private static String requestHttpForGoogle(String EAN, String format) {
         HttpURLConnection connection = null;
         BufferedReader serverResponse = null;
 
@@ -141,7 +141,7 @@ public class ShoppingApi {
             }
         }
         return replyServer;
-    }
+    }*/
 
     /**
      * Transforme string en calendar

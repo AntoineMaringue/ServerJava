@@ -4,27 +4,47 @@ import API.Api;
 import API.IHttpRequest;
 import API.IParseur;
 import API.ParseurJSON;
+import fr.sciencesu.sns.hibernate.jpa.Produit;
+import fr.sciencesu.sns.hibernate.test.InitDB;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.ConnectException;
+import java.util.Calendar;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Main
 {
 	
 	public static void main(String[] args) 
 	{
-		//ScanNStock sns = new ScanNStock();
+            
+            testRequestHibernate(40);
+	
+            //testAPIOpenFoodFact();
+           
+            //testParseurJSON();
+	}
+
+    private static Produit testAPIOpenFoodFact() {
+        	//ScanNStock sns = new ScanNStock();
 		//sns.launch();
 	String COCA_LIGHT = "5449000050205";
         String SUCHARD = "7622210107718";
         String SPECIAL_K = "5050083425585";
             IHttpRequest api = new Api();
             api.runSearchProduct(COCA_LIGHT);
-            
-		/*IParseur p = new ParseurJSON();
+            api.getProduct().setDdp(Calendar.getInstance());
+           return api.getProduct();
+		
+    }
+
+    private static void testParseurJSON() {
+         /*IParseur p = new ParseurJSON();
 		String s = "";
 		try{
 			InputStream ips=new FileInputStream("C:\\Users\\antoi_000\\Desktop\\t.txt"); 
@@ -59,6 +79,42 @@ public class Main
             else
             {
                 System.out.println("Le produit demandé n'a pas été trouvé dans la base google !");
-            }*/
-	}
+            }*/}
+
+    private static void testRequestHibernate(int numberAddProduct) {
+     
+        for (int i = 0; i < numberAddProduct; i++) {
+            InitDB database = new InitDB();
+        
+            try 
+            {
+                database.connection();
+                
+                //Traitement
+                Produit p = testAPIOpenFoodFact();
+                //Création produit via open food fact
+                database.Create(p);
+                // database.deconnection();
+                //Ajout produit
+                //database.connection();
+                //Update d'un stock
+                database.Update(p, 2);
+                
+               
+            
+            }             
+            catch (ConnectException ex) {
+                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            finally
+            {
+                 database.deconnection();
+            }
+        }
+        
+        
+        
+    }
+    
 }
