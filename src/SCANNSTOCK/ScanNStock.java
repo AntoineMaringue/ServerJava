@@ -5,6 +5,8 @@ import API.IHttpRequest;
 import API.ShoppingApi;
 import fr.sciencesu.sns.hibernate.jpa.Produit;
 import fr.sciencesu.sns.hibernate.test.BDD;
+import fr.sciencesu.sns.hibernate.test.InitDB;
+import java.net.ConnectException;
 import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,10 +18,13 @@ public final class ScanNStock implements IScanNStock {
     private static String _EAN;
     private Produit produit = null;
     private boolean connexion;
+    
+    InitDB database;
 
     public ScanNStock() {
         //_shop = new ShoppingApi();
         //Test.connection();
+        database = new InitDB();
     }
 
     public ScanNStock(String isbn) {
@@ -31,13 +36,21 @@ public final class ScanNStock implements IScanNStock {
     }
 
     public void connection() {
-        BDD.connection();
+        if( null == database)
+        {
+         database = new InitDB();
+        }
+        try {
+            database.connection();
+        } catch (ConnectException ex) {
+            System.out.println(ex.getMessage());
+        }
         connexion = true;
 
     }
 
     public void deconnexion() {
-        BDD.deconnection();
+        database.deconnection();
         connexion = false;
 
     }
@@ -81,12 +94,15 @@ public final class ScanNStock implements IScanNStock {
 
 
         //Insertion des valeurs dans la base
-        b = BDD.Create("Produit", produit);
+       // b = BDD.Create("Produit", produit);
         //BDD.Update(produit,idstock);
-        BDD.UpdateProduit("Produit", //TABLE
-                produit.getNom(), //CHAMP
-                "produits_stock_stocks_id", //ID 
-                idstock);//VALEUR
+        //BDD.UpdateProduit("Produit", //TABLE
+           //     produit.getNom(), //CHAMP
+             //   "produits_stock_stocks_id", //ID 
+             //   idstock);//VALEUR
+        
+        database.Create(produit);
+        database.Update(produit, Integer.getInteger(idstock));
         //basePersoScanNStock.insertInto(_tableName, produit);
 
         //D�connection de la base
@@ -99,20 +115,24 @@ public final class ScanNStock implements IScanNStock {
     public boolean InsertToBase(String idstock, int nb) {
         boolean b = true;
 
-        for (int i = 0; i < nb; i++) {
-            
+        for (int i = 0; i < nb; i++) {            
         
-        //Insertion des valeurs dans la base
-        b = BDD.Create("Produit", produit);
+            connection();
+            //Insertion des valeurs dans la base
+           // b = BDD.Create("Produit", produit);
 
-        BDD.UpdateProduit("Produit", //TABLE
-                produit.getNom(), //CHAMP
-                "produits_stock_stocks_id", //ID 
-                idstock);//VALEUR
-        //basePersoScanNStock.insertInto(_tableName, produit);
+            //BDD.UpdateProduit("Produit", //TABLE
+                 //   produit.getNom(), //CHAMP
+                  //  "produits_stock_stocks_id", //ID 
+                  //  idstock);//VALEUR
 
-        //D�connection de la base
-        deconnexion();
+            database.Create(produit);
+            database.Update(produit, Integer.getInteger(idstock));
+
+            //basePersoScanNStock.insertInto(_tableName, produit);
+
+            //D�connection de la base
+            deconnexion();
         }
         //_basePersoScanNStock.deconnection();
 
